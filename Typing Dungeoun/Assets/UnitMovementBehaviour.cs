@@ -9,8 +9,6 @@ public class UnitMovementBehaviour : MonoBehaviour
 {
     [SerializeField] private float skinSmoothSpeed;
     [SerializeField] private Transform _bodySprite;
-    [SerializeField] private float speed = 1f;
-    [SerializeField] private float velocityCap = 0.2f;
     [SerializeField] private float snappedSpeed = 1f;
     [SerializeField] private Rigidbody2D _rigidbody2D;
 
@@ -21,16 +19,17 @@ public class UnitMovementBehaviour : MonoBehaviour
         MoveToTargetPosition(spell.MovementTargetCoordinates, spell.MovementDuration);
     }
     
-    private void MoveToTargetPosition(Vector2 targetPosition, float duration)
+    private void MoveToTargetPosition(Vector2 targetPosition, float speed)
     {
-       var newTargetPosition = new Vector2(transform.position.x, transform.position.y) + targetPosition;
+        var rigidBodyPosition = _rigidbody2D.transform.position;
+        var newTargetPosition = new Vector2(rigidBodyPosition.x, rigidBodyPosition.y) + targetPosition;
 
-       if(_currentMovementCoroutine != null)
-       {
-           StopCoroutine(_currentMovementCoroutine);
-       }
+        if(_currentMovementCoroutine != null)
+        {
+            StopCoroutine(_currentMovementCoroutine);
+        }
        
-       _currentMovementCoroutine = StartCoroutine(MoveToPosition(newTargetPosition, speed));
+        _currentMovementCoroutine = StartCoroutine(MoveToPosition(newTargetPosition, speed));
     }
 
     private IEnumerator MoveToPosition(Vector2 targetPosition, float speed)
@@ -54,11 +53,11 @@ public class UnitMovementBehaviour : MonoBehaviour
         }
 
         var clappedPosition =
-            new Vector2(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y));
+            new Vector2(Mathf.RoundToInt(_rigidbody2D.position.x), Mathf.RoundToInt(_rigidbody2D.position.y));
         
         while (true)
         {
-            transform.position = Vector2.Lerp(transform.position, clappedPosition, snappedSpeed * Time.deltaTime);
+            _rigidbody2D.position = Vector2.Lerp(_rigidbody2D.position, clappedPosition, snappedSpeed * Time.deltaTime);
             
             yield return null;
         }
@@ -66,7 +65,7 @@ public class UnitMovementBehaviour : MonoBehaviour
 
     private void FixedUpdate()
     {
-        _bodySprite.transform.position = Vector2.Lerp(_bodySprite.transform.position, transform.position,
+        _bodySprite.transform.position = Vector2.Lerp(_bodySprite.transform.position,_rigidbody2D.position,
             Time.fixedDeltaTime * skinSmoothSpeed);
     }
 }

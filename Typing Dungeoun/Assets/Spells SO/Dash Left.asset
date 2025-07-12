@@ -16,4 +16,4 @@ MonoBehaviour:
   SpellSummonText: DASH LEFT
   SpellType: 0
   MovementTargetCoordinates: {x: -4, y: 0}
-  MovementDuration: 1
+  MovementDuration: 10

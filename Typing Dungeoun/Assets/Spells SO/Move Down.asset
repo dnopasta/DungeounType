@@ -16,4 +16,4 @@ MonoBehaviour:
   SpellSummonText: MOVE DOWN
   SpellType: 0
   MovementTargetCoordinates: {x: 0, y: -1}
-  MovementDuration: 0.5
+  MovementDuration: 4
